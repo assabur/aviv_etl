@@ -1,0 +1,60 @@
+enable: True
+name : listing
+order: 1
+inputs:
+- name: listing
+  uri: ${raw}/sample.csv
+  parameters:
+    format: csv
+    options:
+      header: True
+      delimiter: ","
+      encoding: "utf-8"
+    ddl_schema : "
+              listing_id bigint, 
+              transaction_type string, 
+              item_type string, 
+              start_date string, 
+              change_date string, 
+              price decimal, 
+              area decimal, 
+              site_area string, 
+              floor decimal, 
+              room_count int, 
+              balcony_count int, 
+              terrace_count int, 
+              has_garden BOOLEAN, 
+              city string, 
+              zipcode string, 
+              has_passenger_lift BOOLEAN, 
+              is_new_construction BOOLEAN, 
+              build_year string, 
+              terrace_area decimal, 
+              has_cellar BOOLEAN, 
+              is_furnished BOOLEAN, 
+              description_fr string
+             "
+
+
+
+transforms:
+
+- name: preprocess
+  transformer: FreeStyleTransformer
+  inputs: listing
+  parameters:
+    function_name: preprocessing
+    function_parameters:
+      technical_keys:
+        list_tech_id: [ "listing_id", "start_date", "change_date", "price"]
+
+
+
+outputs:
+- name: output_well_formatted
+  loader: src.load.ParquetLoader
+  input: output_well_formatted
+  uri: ${silver}/listing/
+  parameters:
+    table_name: listing
+
