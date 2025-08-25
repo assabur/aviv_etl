@@ -23,11 +23,6 @@ class SparkHelper:
     def setup_core_config():
         return {
                 "spark.sql.parquet.writeLegacyFormat": "true",
-                "spark.sql.parquet.compression.codec": "none",
-                "spark.sql.parquet.datetimeRebaseModeInWrite": "LEGACY",
-                "spark.sql.parquet.datetimeRebaseModeInRead": "LEGACY",
-                "spark.sql.parquet.int96RebaseModeInWrite": 'LEGACY',
-                "spark.sql.debug.maxToStringFields": "1000",
                 "spark.sql.session.timeZone": "UTC",
                 "spark.jars.packages": "org.postgresql:postgresql:42.7.4",
                 "spark.app.name": "MyLocalApp",

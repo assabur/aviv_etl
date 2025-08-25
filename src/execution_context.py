@@ -1,10 +1,9 @@
 import json
-from datetime import datetime
 import yaml
 import os
 from dotenv import load_dotenv
 from string import Template
-from typing import List, Optional
+from typing import List
 from src.skeleton import Config, GroupConfig
 from src.utils.config_handler import ConfigHandler
 from src.utils.spark import SparkHelper

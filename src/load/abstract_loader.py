@@ -18,6 +18,10 @@ class AbstractLoader(metaclass=ABCMeta):
         mod_name, cls_name = config.loader.rsplit('.', 1)
         mod = import_module(mod_name)
         cls: Type[AbstractLoader] = getattr(mod, cls_name)
+
+        print("cls", cls)
+        print("mod_name", mod_name)
+
         if config.parameters:
             return kls(**config.parameters)  # type: ignore
         return cls()

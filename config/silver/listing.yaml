@@ -152,8 +152,12 @@ transforms:
 outputs:
 - name: output_well_formatted
   loader: src.load.ParquetLoader
-  input: output_well_formatted
-  uri: ${silver}/listing/
+  input: clean_type_columns_dataset
+  uri: ${silver}/listing
   parameters:
-    table_name: listing
+    table_name: clean_listing
+
+
+
+
 

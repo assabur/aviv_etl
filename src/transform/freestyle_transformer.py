@@ -5,7 +5,6 @@ from pyspark.sql import SparkSession
 from src.transform import AbstractTransform
 
 
-
 class FreeStyleTransformer(AbstractTransform):
     def __init__(self, function_name: str, function_parameters=None) -> None:
         self.function_name = function_name

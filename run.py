@@ -34,6 +34,9 @@ pg_properties = {
     "driver": "org.postgresql.Driver"
 }
 
+df.write.parquet("/Users/popylamerveille/PycharmProjects/Etl/datalake/silver/test" )
+
+
 # Écriture (schéma explicite recommandé)
 df.write \
   .mode("overwrite") \

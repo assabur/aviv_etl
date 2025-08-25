@@ -40,7 +40,7 @@ def create_technical_key_col(dataframe, tech_col_name: str, columns: List[str]):
         tech_col_name, F.md5(F.concat_ws("^", *sanitized)))
 
     # Réordonner les colonnes pour que "id tech" soit en premier
-    cols = [tech_col_name] + [c for c in dataframe.columns if c != "id"]
+    cols = [tech_col_name] + [c for c in dataframe.columns if c != tech_col_name]
     dataframe = dataframe.select(cols)
     print("Technical_key_col created !")
     return dataframe
@@ -100,5 +100,4 @@ def clean_types_columns(df: DataFrame, columns_to_clean: Union[str, List[str]]) 
             ).otherwise(F.col(col))
         )
 
-    df.show(truncate=False)
     return df

@@ -39,9 +39,6 @@ class Extractor(AbstractExtractor):
         if self.filter_on is not None:
             return dataframe.filter(self.filter_on)
 
-        print("dataframe.count()")
-        print(dataframe.count())
-
         return dataframe
 
     @staticmethod

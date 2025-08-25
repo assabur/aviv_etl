@@ -1,6 +1,6 @@
 from typing import Dict
 from pyspark.sql import DataFrame as SDF
-from src.load import AbstractLoader
+from src.load import AbstractLoader, ParquetLoader
 from src.transform import AbstractTransform
 from src.skeleton import Config
 from src.validators import AbstractValidator
@@ -86,11 +86,18 @@ class Pipeline:
         outputs: Dict[str, SDF] : map contains as a key the name of
         the dataframe and the value is the dataframe itself
         """
+        print("In Load Section")
+
         for config in self.config.outputs:
             dataframe = outputs[config.input]
-            outputs[config.name] = AbstractLoader.from_config(config).load(
+
+            outputs[config.name] = ParquetLoader(config).load(
+                           dataframe, config.uri,
+                           self.spark)
+
+            """outputs[config.name] = AbstractLoader.from_config(config).load(
                 dataframe, config.uri,
-                self.spark)
+                self.spark)"""
 
 
     def run(self) -> Dict[str, SDF]:
@@ -99,6 +106,6 @@ class Pipeline:
         self.set_quality_gate(outputs)
         self.set_transform_results(outputs)
         self.set_load_results(outputs)
-        self.spark.catalog.clearCache()
+        #self.spark.catalog.clearCache()
 
         return outputs

@@ -57,7 +57,7 @@ class OutputConfig:
     name: str
     uri: str
     input: Optional[str] = None
-    loader: str = "src.load.Loader"
+    loader: str = "src.load.Loader."
     parameters: Optional[Dict[str, Any]] = None
 
     """
