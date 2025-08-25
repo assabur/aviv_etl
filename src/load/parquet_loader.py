@@ -29,27 +29,19 @@ class ParquetLoader:
 
     def load(self, df: SDF, uri: str, spark) -> None:
 
-
-
-        #add eventdate column
         df = df.withColumn("eventdate",
                            F.date_format(F.current_date(), "yyyy-MM-dd")
                            )
 
-        df.show()
         df.printSchema()
         df.write \
             .mode("overwrite") \
             .format("parquet") \
-            .save("/Users/popylamerveille/PycharmProjects/Etl/datalake/silver/listing")
+            .partitionBy("eventdate") \
+            .save(uri)
         print("uri", uri)
         if self.partitions_fields:
-            print('in the IFFFFFFFFFf')
-            df.write.mode(self.mode).option("compression", "snappy").partitionBy(self.partitions_fields.append("eventdate")).parquet(uri)
-        print("uri", uri)
-        df.write.mode("overwrite").orc("/Users/popylamerveille/Desktop/output_parquet")
-
-        print("uri",uri)
+            df.write.mode(self.mode).partitionBy(self.partitions_fields.append("eventdate")).parquet(uri)
 
 
 

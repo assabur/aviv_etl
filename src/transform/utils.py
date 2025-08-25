@@ -3,6 +3,9 @@ from pyspark.sql import DataFrame
 from pyspark.sql import functions as F
 from typing import Union, List
 
+from pyspark.sql.functions import lit
+
+
 def preprocessing(dataframe,
                   technical_keys: Dict[str, List[str]] = {},
                   filter_on=None,
@@ -97,7 +100,7 @@ def clean_types_columns(df: DataFrame, columns_to_clean: Union[str, List[str]]) 
             F.when(
                 F.col(col).rlike(r"^(ITEM_TYPE|TRANSACTION_TYPE)\..+"),
                 F.substring_index(F.col(col), ".", -1)
-            ).otherwise(F.col(col))
+            ).otherwise(lit('unknown'))
         )
 
     return df
