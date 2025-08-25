@@ -16,6 +16,7 @@ class AbstractValidator(metaclass=ABCMeta):
         mod_name, cls_name = config.validator.rsplit('.', 1)
         mod = import_module(mod_name)
         cls: Type[AbstractValidator] = getattr(mod, cls_name)
-        if config.parameters:
-            return kls(**config.parameters)  # type: ignore
+        print(config.parameters)
+        if config.parameters :
+            return cls(**config.parameters)  # type: ignore
         return cls()

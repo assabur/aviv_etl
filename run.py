@@ -13,7 +13,7 @@ spark = (
 
 # Lecture CSV
 df = spark.read.csv(
-    "/Users/popylamerveille/PycharmProjects/aviv_etl/datalake/raw/sample.csv",
+    "/Users/popylamerveille/PycharmProjects/Etl/datalake/raw/sample.csv",
     header=True,
     inferSchema=True
 )

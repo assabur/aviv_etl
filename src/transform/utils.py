@@ -1,21 +1,15 @@
-
 from typing import Dict, List, Optional
-import pyspark.sql.functions as F
-
-
+from pyspark.sql import DataFrame
+from pyspark.sql import functions as F
+from typing import Union, List
 
 def preprocessing(dataframe,
                   technical_keys: Dict[str, List[str]] = {},
                   filter_on=None,
                   audit_columns: Optional[Dict[str, str]] = None):
-
     dataframe = create_audit_columns(dataframe, audit_columns)
     dataframe = create_technical_column(dataframe, technical_keys=technical_keys)
-    dataframe.show()
     return dataframe if filter_on is None else dataframe.filter(filter_on)
-
-
-
 
 
 def create_audit_columns(dataframe, audit_columns: Dict[str, str]):
@@ -35,24 +29,30 @@ def create_technical_key_col(dataframe, tech_col_name: str, columns: List[str]):
     For instance, integer or bigint having the same value are not stored on the
     same numbers of bytes why the hash will be different
     """
-    print ("in create_technical_key_col")
 
     # null ou vide après trim
     def is_blank(c):
         return F.col(c).isNull() | (F.length(F.trim(F.col(c))) == 0)
 
     sanitized = [F.when(is_blank(c), F.lit(None)).otherwise(F.col(c)) for c in columns]
-    any_blank = F.reduce(lambda a, b: a | b, [is_blank(c) for c in columns])
-
-    print ("sanitized", sanitized)
-    print ("any_blank", any_blank)
 
     dataframe = dataframe.withColumn(
-        tech_col_name,
-        F.when(any_blank, F.lit(None))  # -> None si au moins un champ est vide
-        .otherwise(F.md5(F.concat_ws("^", *sanitized)))  # md5 = STRING (32 hex)
-    )
-    dataframe.show()
+        tech_col_name, F.md5(F.concat_ws("^", *sanitized)))
+
+    # Réordonner les colonnes pour que "id tech" soit en premier
+    cols = [tech_col_name] + [c for c in dataframe.columns if c != "id"]
+    dataframe = dataframe.select(cols)
+    print("Technical_key_col created !")
+    return dataframe
+
+
+def replace_nulls_values(dataframe, columns_to_clean: Dict[str, str]):
+
+    columns_to_clean= list(columns_to_clean.values())[0]
+    print(columns_to_clean, type(columns_to_clean),"columns_to_clean")
+    columns_to_clean= columns_to_clean if  columns_to_clean else {}
+
+    dataframe = dataframe.na.fill(columns_to_clean)
     return dataframe
 
 
@@ -63,11 +63,42 @@ def create_technical_column(dataframe, technical_keys: Dict[str, List[str]]):
     print(technical_keys)
 
     for technical_keys, columnsDict in technical_keys.items():
-        for tech_col_name,columns in columnsDict.items():
-            print (columns)
+        for tech_col_name, columns in columnsDict.items():
+            print(columns)
         dataframe = create_technical_key_col(dataframe, tech_col_name=tech_col_name, columns=columns)
         return dataframe
     return None
 
 
 
+
+def clean_types_columns(df: DataFrame, columns_to_clean: Union[str, List[str]]) -> DataFrame:
+    """
+    Remplace les valeurs de type TRANSACTION_TYPE.SELL par SELL dans une ou plusieurs colonnes.
+
+    Args:
+        df (DataFrame): DataFrame PySpark
+        cols (str | List[str]): Nom d'une colonne ou liste de colonnes à nettoyer
+
+    Returns:
+        DataFrame: DataFrame avec colonnes nettoyées
+        :param columns_to_clean:
+    """
+    if isinstance(columns_to_clean, str):
+        columns_to_clean = [columns_to_clean]
+
+    columns_to_clean= columns_to_clean.get("columns_to_clean", [])
+
+
+    for col in columns_to_clean:
+        # on coupe sur le "." et on prend la dernière partie
+        df = df.withColumn(
+            col,
+            F.when(
+                F.col(col).rlike(r"^(ITEM_TYPE|TRANSACTION_TYPE)\..+"),
+                F.substring_index(F.col(col), ".", -1)
+            ).otherwise(F.col(col))
+        )
+
+    df.show(truncate=False)
+    return df

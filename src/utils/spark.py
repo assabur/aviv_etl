@@ -24,14 +24,18 @@ class SparkHelper:
         return {
                 "spark.sql.parquet.writeLegacyFormat": "true",
                 "spark.sql.parquet.compression.codec": "none",
-
                 "spark.sql.parquet.datetimeRebaseModeInWrite": "LEGACY",
                 "spark.sql.parquet.datetimeRebaseModeInRead": "LEGACY",
                 "spark.sql.parquet.int96RebaseModeInWrite": 'LEGACY',
                 "spark.sql.debug.maxToStringFields": "1000",
                 "spark.sql.session.timeZone": "UTC",
                 "spark.jars.packages": "org.postgresql:postgresql:42.7.4",
-                "spark.driver.memory" :"2g"
+                "spark.app.name": "MyLocalApp",
+                "spark.master": "local[4]",  # 4 threads
+                "spark.driver.memory": "4g",  # mémoire driver
+                "spark.executor.memory": "2g",  # mémoire executors
+                "spark.executor.cores": "2",  # nb de cores par executor
+                "spark.sql.shuffle.partitions": "8"
 
         }
 

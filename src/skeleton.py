@@ -102,7 +102,7 @@ class Config:
     name: str = "default_name"
     enable: bool = True
     order: int = 9999
-    validation: Optional[List[ValidationConfig]] = None
+    quality_gate: Optional[List[ValidationConfig]] = None
     inputs: Optional[List[InputConfig]] = None
     transforms: Optional[List[TransformConfig]] = None
     outputs: Optional[List[OutputConfig]] = None
@@ -112,7 +112,7 @@ class Config:
         if isinstance(other, Config):
             return self.inputs == other.inputs and \
                 self.transforms == other.transforms and \
-                self.validations == other.validations and \
+                self.quality_gate == other.quality_gate and \
                 self.outputs == other.outputs
 
 @dataclass_json

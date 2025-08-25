@@ -35,18 +35,19 @@ class Pipeline:
                 config
             ).extract(uri=config.uri, spark=self.spark)
 
-    def set_validate(self, outputs: Dict[str, SDF]) -> None:
+    def set_quality_gate(self, outputs: Dict[str, SDF]) -> None:
         """
         This function will run the rules for the pre-validations of the dataframe
         Parameters like data quality checks etc
         ----------
-        outputs: Dict[str, SDF] : map contains as a key the name of
-        the dataframe and the value is the dataframe itself
+        outputs: dataframe or json store on the silver layer to make dashboards later
         """
-        if not self.config.validation:
+
+        if not self.config.quality_gate:
             return
-        for config in self.config.validation:
+        for config in self.config.quality_gate:
             if isinstance(config.input, str):
+                print("In Quality Gate Section")
                 AbstractValidator.from_config(config).validate(
                     outputs[config.input], self.spark)
             if isinstance(config.input, dict):
@@ -95,7 +96,7 @@ class Pipeline:
     def run(self) -> Dict[str, SDF]:
         outputs: Dict[str, SDF] = {}
         self.set_extract_results(outputs)
-        self.set_validate(outputs)
+        self.set_quality_gate(outputs)
         self.set_transform_results(outputs)
         self.set_load_results(outputs)
         self.spark.catalog.clearCache()

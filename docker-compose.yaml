@@ -1,0 +1,37 @@
+services:
+  postgres:
+    image: postgres:15
+    container_name: postgres_db
+    environment:
+      POSTGRES_USER: db
+      POSTGRES_PASSWORD: db
+      POSTGRES_DB: postgres_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U db -d postgres_db -h 127.0.0.1 -p 5432" ]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: pgadmin
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@admin.com
+      PGADMIN_DEFAULT_PASSWORD: admin
+    ports:
+      - "5050:80"   # accès via http://localhost:5050
+    depends_on:
+      - postgres
+
+volumes:
+  pgdata:
+
+#docker-compose up -d pour lancer
+#psql "postgres://myuser:mypassword@localhost:5432/mydb" -c "\dt app.*" pour tester la connexion
+
+
+#docker inspect --format='{{.State.Health.Status}}' postgres_db

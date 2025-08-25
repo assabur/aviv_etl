@@ -21,12 +21,9 @@ class  AbstractTransform(metaclass=abc.ABCMeta):
         print(f"{config.name} ==>{config.transformer}")
         print (config)
         mod_name,cls_name = config.transformer.rsplit('.',1)
-
         mod = importlib.import_module(mod_name)
-
         print(f"{mod_name} ==>{cls_name}")
         cls : Type[AbstractTransform]= getattr(mod, cls_name)
-        print(f"class is {cls}.")
         if config.parameters:
             return cls (**config.parameters)
         return cls()
