@@ -1,0 +1,16 @@
+# Core runtime dependencies for aviv_etl
+# Spark engine (Python bindings)
+pyspark>=3.5,<3.6
+
+# YAML config parsing
+pyyaml>=6.0.1
+
+# .env file support
+python-dotenv>=1.0.0
+
+# Data classes JSON (used by config/dataclass helpers)
+dataclasses-json>=0.6.4
+
+# Data quality checks (legacy Dataset API incl. SparkDFDataset)
+# Keep <0.18 to preserve Dataset-based interfaces
+great-expectations>=0.16,<0.18
