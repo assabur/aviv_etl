@@ -4,7 +4,6 @@ from src.skeleton import GroupConfig
 from pyspark.sql import SparkSession
 
 
-
 class WrapperPipeline:
     """
     this class is the wrapper of the job
@@ -18,7 +17,6 @@ class WrapperPipeline:
         self.configs = configs
         self.spark = spark
         self.status = []
-
 
     def launch(self):
         errors = []
@@ -35,8 +33,10 @@ class WrapperPipeline:
                 self.status.append((config.name, 0, "Fails"))
                 errors.append((config.name, exception))
 
-
     @property
     def enable_jobs(self):
-        configs = sorted([config for config in self.configs.configs if config.enable], key=lambda x: x.order)
+        configs = sorted(
+            [config for config in self.configs.configs if config.enable],
+            key=lambda x: x.order,
+        )
         return configs

@@ -1,0 +1,45 @@
+name: Lint & Type Check
+
+on:
+  push:
+    branches: [ main ]
+    paths: ["src/**", ".pre-commit-config.yaml", "pyproject.toml", "requirements*.txt"]
+  pull_request:
+    paths: ["src/**", ".pre-commit-config.yaml", "pyproject.toml", "requirements*.txt"]
+
+concurrency:
+  group: lint-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Cache pip
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('requirements*.txt') }}
+          restore-keys: ${{ runner.os }}-pip-
+
+      - name: Cache pre-commit
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/pre-commit
+          key: ${{ runner.os }}-pre-commit-${{ hashFiles('.pre-commit-config.yaml') }}
+
+      - name: Install tooling
+        run: |
+          python -m pip install -U pip
+          pip install -U pre-commit
+          if ls requirements*.txt 1> /dev/null 2>&1; then pip install -r requirements.txt || true; fi
+
+      # Grâce au 'files: ^src/' dans les hooks, on peut garder --all-files
+      - name: Run pre-commit (src only)
+        run: pre-commit run --all-files

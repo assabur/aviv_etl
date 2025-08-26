@@ -19,7 +19,7 @@ class Singleton(type):
 
 
 class ExecutionContext(metaclass=Singleton):
-    def __init__(self,   specification_file: str  ):
+    def __init__(self, specification_file: str):
         """
         :param :
         """
@@ -27,7 +27,6 @@ class ExecutionContext(metaclass=Singleton):
         self.specification_file = specification_file
         self.config_handler = ConfigHandler()
         self.spark = None
-
 
     def get_config(self, content_config) -> Config:
         render_text = self.render(content_config)
@@ -48,7 +47,6 @@ class ExecutionContext(metaclass=Singleton):
 
         return GroupConfig(configs=configs)
 
-
     # subtitutes Jinja values from yaml
     def render(self, content) -> str:
         load_dotenv()
@@ -56,21 +54,16 @@ class ExecutionContext(metaclass=Singleton):
         silver = os.getenv("SILVER")
         gold = os.getenv("GOLD")
         template_config = Template(content)
-        full_text = template_config.substitute({
-            "raw": raw,
-            "silver": silver,
-            "gold": gold,
-        })
-       # print(full_text)
+        full_text = template_config.substitute(
+            {
+                "raw": raw,
+                "silver": silver,
+                "gold": gold,
+            }
+        )
+        # print(full_text)
 
         return full_text
 
-
-
-
     def get_config_text(self) -> List[str]:
         return self.config_handler.read_as_string_local(path=self.specification_file)
-
-
-
-

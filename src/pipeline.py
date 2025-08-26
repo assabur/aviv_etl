@@ -1,6 +1,6 @@
 from typing import Dict
 from pyspark.sql import DataFrame as SDF
-from src.load import AbstractLoader, ParquetLoader
+from src.load import AbstractLoader
 from src.transform import AbstractTransform
 from src.skeleton import Config
 from src.validators import AbstractValidator
@@ -20,7 +20,6 @@ class Pipeline:
         self.config = config
         self.spark = spark
 
-
     def set_extract_results(self, outputs: Dict[str, SDF]) -> None:
         """
         This function will run the extract part of the workflow
@@ -31,9 +30,7 @@ class Pipeline:
         """
 
         for config in self.config.inputs:
-            outputs[config.name] = AbstractExtractor.from_config(
-                config
-            ).extract(uri=config.uri, spark=self.spark)
+            outputs[config.name] = AbstractExtractor.from_config(config).extract(uri=config.uri, spark=self.spark)
 
     def set_quality_gate(self, outputs: Dict[str, SDF]) -> None:
         """
@@ -48,14 +45,12 @@ class Pipeline:
         for config in self.config.quality_gate:
             if isinstance(config.input, str):
                 print("In Quality Gate Section")
-                AbstractValidator.from_config(config).validate(
-                    outputs[config.input], self.spark)
+                AbstractValidator.from_config(config).validate(outputs[config.input], self.spark)
             if isinstance(config.input, dict):
                 inputs: Dict[str, SDF] = {}
                 for k, v in config.input.items():
                     inputs[k] = outputs[v]
-                AbstractValidator.from_config(config).validate(
-                    inputs, self.spark)
+                AbstractValidator.from_config(config).validate(inputs, self.spark)
 
     def set_transform_results(self, outputs: Dict[str, SDF]) -> None:
         if not self.config.transforms:
@@ -65,18 +60,13 @@ class Pipeline:
             if isinstance(config.inputs, dict):
                 for k, v in config.inputs.items():
                     inputs[k] = outputs[v]
-                outputs[config.name] = AbstractTransform.from_config(
-                    config
-                ).transform(inputs, self.spark)
+                outputs[config.name] = AbstractTransform.from_config(config).transform(inputs, self.spark)
             if isinstance(config.inputs, str):
-                outputs[config.name] = AbstractTransform.from_config(
-                    config
-                ).transform(outputs[config.inputs], self.spark)
+                outputs[config.name] = AbstractTransform.from_config(config).transform(
+                    outputs[config.inputs], self.spark
+                )
             if config.inputs is None:
-                outputs[config.name] = AbstractTransform.from_config(
-                    config
-                ).transform(None, self.spark)
-
+                outputs[config.name] = AbstractTransform.from_config(config).transform(None, self.spark)
 
     def set_load_results(self, outputs: Dict[str, SDF]) -> None:
         """
@@ -95,10 +85,7 @@ class Pipeline:
                            dataframe, config.uri,
                            self.spark)"""
 
-            outputs[config.name] = AbstractLoader.from_config(config).load(
-                dataframe, config.uri,
-                self.spark)
-
+            outputs[config.name] = AbstractLoader.from_config(config).load(dataframe, config.uri, self.spark)
 
     def run(self) -> Dict[str, SDF]:
         outputs: Dict[str, SDF] = {}
@@ -106,6 +93,6 @@ class Pipeline:
         self.set_quality_gate(outputs)
         self.set_transform_results(outputs)
         self.set_load_results(outputs)
-        #self.spark.catalog.clearCache()
+        # self.spark.catalog.clearCache()
 
         return outputs

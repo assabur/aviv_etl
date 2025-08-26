@@ -4,7 +4,6 @@ from src.transform import AbstractTransform
 
 
 class SqlTransformer(AbstractTransform):
-
     def __init__(self, sql: str, cache: bool = False) -> None:
         self.cache = cache
         self.sql = sql

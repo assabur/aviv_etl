@@ -14,5 +14,3 @@ class FreeStyleTransformer(AbstractTransform):
     def transform(self, inputs: Dict[str, SDF], spark) -> SDF:
         function_of_transformation = getattr(importlib.import_module("src.transform"), self.function_name)
         return function_of_transformation(inputs, self.function_parameters)
-
-

@@ -12,11 +12,11 @@ class AbstractValidator(metaclass=ABCMeta):
         pass
 
     @staticmethod
-    def from_config(config: ValidationConfig) -> 'AbstractValidator':
-        mod_name, cls_name = config.validator.rsplit('.', 1)
+    def from_config(config: ValidationConfig) -> "AbstractValidator":
+        mod_name, cls_name = config.validator.rsplit(".", 1)
         mod = import_module(mod_name)
         cls: Type[AbstractValidator] = getattr(mod, cls_name)
         print(config.parameters)
-        if config.parameters :
+        if config.parameters:
             return cls(**config.parameters)  # type: ignore
         return cls()

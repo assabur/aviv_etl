@@ -1,0 +1,44 @@
+repos:
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.6.3
+    hooks:
+      - id: ruff
+        files: ^src/               # << ne lint que src/
+        args: ["--fix", "--exit-non-zero-on-fix", "--line-length=120"]
+      - id: ruff-format
+        files: ^src/
+
+  - repo: https://github.com/psf/black
+    rev: 24.8.0
+    hooks:
+      - id: black
+        files: ^src/
+        args: ["--line-length=120"]
+
+  - repo: https://github.com/pre-commit/mirrors-mypy
+    rev: v1.11.2
+    hooks:
+      - id: mypy
+        files: ^src/
+        additional_dependencies:
+          - types-requests
+          - pandas-stubs
+          - types-PyYAML
+        args:
+          - --python-version=3.11
+          - --ignore-missing-imports
+
+
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.6.0
+    hooks:
+      - id: check-merge-conflict
+        files: ^src/|^\.pre-commit-config\.yaml$
+      - id: end-of-file-fixer
+        files: ^src/
+      - id: trailing-whitespace
+        files: ^src/
+      - id: check-yaml
+        files: ^src/|^\.pre-commit-config\.yaml$
+      - id: check-toml
+        files: ^src/|^pyproject\.toml$

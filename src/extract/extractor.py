@@ -17,7 +17,7 @@ class Extractor(AbstractExtractor):
         print(f"Extracting of files to the following uri {uri}")
 
         spark_schema = T._parse_datatype_string(self.ddl_schema) if self.ddl_schema is not None else None
-        #spark_schema = DataType.fromDDL(self.ddl_schema) if self.ddl_schema is not None else None
+        # spark_schema = DataType.fromDDL(self.ddl_schema) if self.ddl_schema is not None else None
 
         print("in the  extract  Extractor...")
         if self.options is None:
@@ -46,7 +46,7 @@ class Extractor(AbstractExtractor):
         if path.endswith("/"):
             return path
         else:
-            return path + '/'
+            return path + "/"
 
     def column_selector(self, dataframe):
         if self.columns is not None:
