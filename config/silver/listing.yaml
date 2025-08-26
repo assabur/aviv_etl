@@ -3,7 +3,7 @@ name : listing
 order: 1
 inputs:
 - name: listing
-  uri: ${raw}/sample.csv
+  uri: ${raw}/listings.csv
   parameters:
     format: csv
     options:

@@ -106,7 +106,7 @@ transforms:
     sql: " 
         SELECT 
         monotonically_increasing_id() AS id_property,
-        CAST(r.start_date AS DATE) AS start_date,
+        CAST(r.start_date AS STRING) AS start_date,
         CAST(r.price AS DECIMAL(14,2)) AS price,
         CAST(r.area AS DECIMAL(10,2)) AS area,
         CAST(r.site_area AS DECIMAL(12,2)) AS site_area,
