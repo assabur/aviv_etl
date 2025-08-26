@@ -1,0 +1,3 @@
+[tool.ruff]
+line-length = 88        # ou 79/120
+lint.select = ["E", "W"]  # règles PEP 8 (équiv. pycodestyle)
