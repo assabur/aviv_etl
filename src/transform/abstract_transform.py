@@ -1,5 +1,5 @@
 import importlib
-from collections import abc
+import abc
 from typing import Type, Union, Dict
 from src.skeleton import TransformConfig
 from pyspark.sql import dataframe as SDF

@@ -1,5 +1,5 @@
 import importlib
-from collections import abc
+import abc
 from typing import Type, Union, List
 from pyspark.sql import dataframe as SDF
 from src.skeleton import InputConfig

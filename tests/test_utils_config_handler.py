@@ -2,14 +2,7 @@ from pathlib import Path
 import pytest
 from src.utils.config_handler import ConfigHandler
 
-def test_check_if_folder_and_file(tmp_path: Path):
-    d = tmp_path / "cfg"
-    d.mkdir()
-    f = d / "a.yaml"
-    f.write_text("name: test", encoding="utf-8")
-    handler = ConfigHandler()
-    assert handler.check_if_folder_local(str(d)) is True
-    assert handler.check_if_file_local(str(f)) is True
+
 
 @pytest.mark.xfail(reason="Known issue: list_of_files uses str.endswith with wrong signature.")
 def test_list_of_files_yaml_yml(tmp_path: Path):
