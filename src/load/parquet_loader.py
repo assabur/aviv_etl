@@ -4,7 +4,7 @@ from pyspark.sql import DataFrame as SDF
 
 
 
-class ParquetLoader:
+class ParquetLoader():
     """
         This class is about the Parquet format loader
     """
@@ -28,8 +28,8 @@ class ParquetLoader:
         self.columns = columns
 
     def load(self, df: SDF, uri: str, spark) -> None:
-
-        df = df.withColumn("eventdate",
+        partition_col= "eventdate"
+        df = df.withColumn(partition_col,
                            F.date_format(F.current_date(), "yyyy-MM-dd")
                            )
 
@@ -37,7 +37,7 @@ class ParquetLoader:
         df.write \
             .mode("overwrite") \
             .format("parquet") \
-            .partitionBy("eventdate") \
+            .partitionBy(partition_col) \
             .save(uri)
         print("uri", uri)
         if self.partitions_fields:

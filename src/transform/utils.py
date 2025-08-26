@@ -100,7 +100,7 @@ def clean_types_columns(df: DataFrame, columns_to_clean: Union[str, List[str]]) 
             F.when(
                 F.col(col).rlike(r"^(ITEM_TYPE|TRANSACTION_TYPE)\..+"),
                 F.substring_index(F.col(col), ".", -1)
-            ).otherwise(lit('unknown'))
+            ).otherwise(col)
         )
 
     return df

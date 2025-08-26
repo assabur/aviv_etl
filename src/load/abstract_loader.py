@@ -23,5 +23,5 @@ class AbstractLoader(metaclass=ABCMeta):
         print("mod_name", mod_name)
 
         if config.parameters:
-            return kls(**config.parameters)  # type: ignore
+            return cls(**config.parameters)  # type: ignore
         return cls()

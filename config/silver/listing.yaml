@@ -69,7 +69,7 @@ quality_gate:
               "is_furnished"  ]
     rule: expect_column_values_to_not_be_null
     rule_kwargs: ""
-    dataset_name: "listing"
+    dataset_name: "listing_raw"
     output_table_name: "check_null_values_listing"
 
 - name: check_duplicate_values
@@ -78,7 +78,7 @@ quality_gate:
   parameters:
     columns: listing_id
     rule: expect_column_values_to_be_unique
-    dataset_name: "listing"
+    dataset_name: "listing_raw"
     output_table_name: "check_duplicate_values_listing"
 
 
@@ -90,7 +90,7 @@ quality_gate:
     rule: expect_column_values_to_match_regex
     rule_kwargs:
       regex: '^\d{5}'
-    dataset_name: "listing"
+    dataset_name: "listing_raw"
     output_table_name: "check_zip_code_values"
 
 transforms:
@@ -102,7 +102,7 @@ transforms:
     function_name: preprocessing
     function_parameters:
       technical_keys:
-        list_tech_id: [ "listing_id", "start_date", "change_date", "price"]
+        listing_tech_id: [ "listing_id", "start_date", "change_date", "price"]
 
 
 
@@ -119,28 +119,39 @@ transforms:
         item_subtype: "unknown"
         start_date: "unknown"
         change_date: "unknown"
-        price: -1.0
-        area: -1.0
-        site_area: -1.0
-        floor: -1.0
-        room_count: -1
-        balcony_count: -1
-        terrace_count: -1
+        #price: -1.0
+        #area: -1.0
+        #site_area: -1.0
+        #floor: -1.0
+        #room_count: -1
+        #balcony_count: -1
+        #terrace_count: -1
         has_garden: "unknown"
         city: "unknown"
         zipcode: "unknown"
         has_passenger_lift: "unknown"
         is_new_construction: "unknown"
-        build_year: -1
-        terrace_area: -1.0
+        #build_year: -1
+        #terrace_area: -1.0
         has_cellar: "unknown"
         is_furnished: "unknown"
         description_fr: "unknown"
 
 
+- name: remove_null_id_values
+  transformer: src.transform.SqlTransformer
+  inputs:
+    clean_dataset_remove_null_values: clean_dataset_remove_null_values
+  parameters:
+    sql: " 
+    select * from clean_dataset_remove_null_values where listing_id > 0
+    
+    "
+
+
 - name: clean_type_columns_dataset
   transformer: FreeStyleTransformer
-  inputs: clean_dataset_remove_null_values
+  inputs: remove_null_id_values
   parameters:
     function_name: clean_types_columns
     function_parameters:
@@ -148,6 +159,10 @@ transforms:
         - transaction_type
         - item_type
         - item_subtype
+
+
+
+
 
 outputs:
 - name: output_well_formatted

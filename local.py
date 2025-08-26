@@ -5,7 +5,8 @@ from src.wrapper_pipeline import WrapperPipeline
 def main():
     context = ExecutionContext(
 
-                                specification_file="config/silver/listing.yaml"
+                                #specification_file="config/silver/listing.yaml"
+                                specification_file="config/gold/listing.yaml"
                                )
 
     config = context.get_configs()

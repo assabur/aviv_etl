@@ -91,13 +91,13 @@ class Pipeline:
         for config in self.config.outputs:
             dataframe = outputs[config.input]
 
-            outputs[config.name] = ParquetLoader(config).load(
+            """outputs[config.name] = ParquetLoader(config).load(
                            dataframe, config.uri,
-                           self.spark)
+                           self.spark)"""
 
-            """outputs[config.name] = AbstractLoader.from_config(config).load(
+            outputs[config.name] = AbstractLoader.from_config(config).load(
                 dataframe, config.uri,
-                self.spark)"""
+                self.spark)
 
 
     def run(self) -> Dict[str, SDF]:
