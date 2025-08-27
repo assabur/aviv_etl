@@ -7,20 +7,20 @@ faire des **contrôles qualité** (Great Expectations) puis **charger** les donn
 
 ---
 
-## 🧭 Vue d’ensemble
+## Vue d’ensemble
 
 - **Langage** : Python
 - **Moteur** : PySpark (Spark local `local[4]`)
 - **Qualité des données** : Great Expectations (validations paramétrables)
 - **Stockage** :
-  - **RAW / SILVER / GOLD** : chemins paramétrés via `.env`
+  - **RAW(Bronze) / SILVER / GOLD** : chemins paramétrés via `.env`
   - **Parquet** (silver) avec partition par `eventdate`
   - **PostgreSQL** (gold) via JDBC
 - **Exécution** : `python local.py` (choisit un job YAML dans `config/`)
 
 ---
 
-## 🗂️ Structure du repo
+## Structure du repo
 
 ```
 aviv_etl/
@@ -35,18 +35,18 @@ aviv_etl/
 │  ├─ validators/                 # Great Expectations – contrôles colonnes/règles
 │  └─ utils/                      # Spark helper + lecture des fichiers YAML
 ├─ config/
-│  ├─ silver/listing.yaml         # job silver : RAW → nettoyage → Parquet (partition eventdate)
+│  ├─ silver/listing.yaml         # job silver : RAW (Bronze) ou Bronze → nettoyage → Parquet (partition eventdate)
 │  └─ gold/listing.yaml           # job gold : silver → quality gate → Postgres
 ├─ initdb/init_listing_table.sql  # DDL PostgreSQL (property, historique_price, dictionnaires)
 ├─ docker-compose.yaml            # Postgres + pgAdmin
-├─ .env                           # variables (DB_*, RAW, SILVER, GOLD)
+├─ .env                           # variables (DB_*, RAW(Bronze), SILVER, GOLD)
 ├─ requirements.in
 └─ requirements.txt
 ```
 
 ---
 
-## 🔧 Prérequis
+##  Prérequis
 
 - **Python** ≥ 3.11 recommandé
 - **Java JDK** ≥ 11 (requis par PySpark)
@@ -58,7 +58,7 @@ Paquets Python utiles (selon le code du projet) :
 
 ---
 
-## ⚙️ Configuration (.env)
+## Configuration (.env)
 
 Exemple de `.env` à la racine du projet :
 
@@ -80,7 +80,7 @@ GOLD=./datalake/gold
 
 ---
 
-## 🐘 Base de données (Docker)
+## Base de données (Docker)
 
 Un `docker-compose.yaml` est fourni pour Postgres + pgAdmin. Démarrer :
 
@@ -104,7 +104,7 @@ pgAdmin : http://localhost:5050 (admin@admin.com / admin). Ajoutez un serveur ve
 
 ---
 
-## 📦 Installation
+## Installation
 
 ```bash
 python -m venv .venv
@@ -121,7 +121,7 @@ pip install pyspark dataclasses-json python-dotenv great-expectations
 
 ---
 
-## ▶️ Exécution
+## Exécution
 
 1) Vérifiez `.env` (chemins RAW/SILVER/GOLD + DB).  
 2) Placez **`listings.csv`** dans `${RAW}`.  
@@ -149,7 +149,7 @@ python local.py
 
 ---
 
-## 🧪 Contrôles qualité (Great Expectations)
+## Contrôles qualité (Great Expectations)
 
 La section `quality_gate` des YAML (ex: `config/gold/listing.yaml`) déclenche un validateur (présence / nullité / types / cardinalités).  
 Les résultats peuvent être exportés (events JSON).  
@@ -157,7 +157,7 @@ Pour désactiver : commentez la section `quality_gate` du YAML gold.
 
 ---
 
-## 🧱 Schéma de données (Gold / PostgreSQL)
+## Schéma de données (Gold / PostgreSQL)
 
 Le script `initdb/init_listing_table.sql` gère :
 
@@ -168,7 +168,7 @@ Le script `initdb/init_listing_table.sql` gère :
 
 ---
 
-## 🧩 YAML de pipeline (structure)
+## YAML de pipeline (structure)
 
 Chaque job YAML contient :
 
@@ -181,7 +181,7 @@ Plusieurs jobs peuvent être regroupés (GroupConfig) et exécutés séquentiell
 
 ---
 
-## 🧰 Débogage & problèmes fréquents
+## Débogage & problèmes fréquents
 
 - **`ModuleNotFoundError: No module named 'pyspark'`** : installez `pyspark` et vérifiez **Java (JDK 11+)** + `JAVA_HOME`.
 - **`great_expectations` introuvable** : `pip install great-expectations` ou commentez `quality_gate`.
@@ -194,7 +194,7 @@ Plusieurs jobs peuvent être regroupés (GroupConfig) et exécutés séquentiell
 
 
 
-## ✅ Récapitulatif rapide
+## Récapitulatif rapide
 
 ```bash
 # 1) Préparer l’env
