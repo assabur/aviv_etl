@@ -48,14 +48,10 @@ aviv_etl/
 
 ##  Prérequis
 
-- **Python** ≥ 3.11 recommandé
-- **Java JDK** ≥ 11 (requis par PySpark)
-- **PostgreSQL** (local ou via Docker Compose)
-- **pip** & **virtualenv** (recommandé)
-
-Paquets Python utiles (selon le code du projet) :
-`pyspark`, `dataclasses-json`, `python-dotenv`, `great-expectations`, `pandas`, `pyyaml`
-
+- **Python** ≥ 3.11 
+- **Java JDK** ≥ 11 
+- **PostgreSQL** via Docker Compose
+- **pip** & **virtualenv** 
 ---
 
 ## Configuration (.env)
@@ -64,9 +60,9 @@ Exemple de `.env` à la racine du projet :
 
 ```env
 # --- Base de données ---
-DB_USER=db
-DB_PASSWORD=db
-DB_NAME=postgres_db
+DB_USER=user
+DB_PASSWORD=pwd
+DB_NAME=postgres_db_name
 DB_HOST=localhost
 DB_PORT=5432
 
@@ -114,8 +110,6 @@ pip install --upgrade pip
 # Dépendances projet
 pip install -r requirements.txt    # (ou pip install -r requirements.in)
 
-# Dépendances souvent manquantes
-pip install pyspark dataclasses-json python-dotenv great-expectations
 ```
 
 
@@ -143,8 +137,8 @@ Lancez :
 ```bash
 python local.py
 ```
-
-> Le Spark local est généralement configuré sur `local[4]`, mémoire driver 4g.  
+NB :
+> Le Spark local est  configuré sur `local[4]`, mémoire driver 4g.  
 > Le connecteur JDBC Postgres peut être chargé via `spark.jars.packages=org.postgresql:postgresql:42.7.4`.
 
 ---
@@ -189,9 +183,6 @@ Plusieurs jobs peuvent être regroupés (GroupConfig) et exécutés séquentiell
 - **Chemins RAW/SILVER/GOLD** : créez les dossiers, placez `listings.csv` sous `${RAW}`.
 
 ---
-
-
-
 
 
 ## Récapitulatif rapide
